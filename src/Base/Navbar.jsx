@@ -43,13 +43,13 @@ export const NavBar = () => {
                 <Row className='ms-auto p-2'>
                     <Col sm={1}>
                         <IconButton
-                        className='fontSize'
+                        className='fontSize '
                             aria-label="account of current user"
                             aria-controls="primary-search-account-menu"
                             aria-haspopup="true"
                             color="inherit"
                         >
-                            <AccountCircle />
+                            <AccountCircle  />
                         </IconButton>
                     </Col>
                 </Row>

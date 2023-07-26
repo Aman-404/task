@@ -26,6 +26,7 @@ export const CreateUser = () => {
   const { name, email, password, confirmPassword } = formData;
 
   const handleChange = (e) => {
+    //console.log(formData);
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };

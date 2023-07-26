@@ -8,6 +8,7 @@ import {Main} from './components/users/Main'
 import {Pannding} from './components/users/Pannding'
 import {Completed} from './components/users/Completed'
 import{Process} from './components/users/Process'
+import { TaskDetail } from './components/admin/taskDetails/TaskDetail';
 function App() {
   return (
     <>
@@ -21,6 +22,7 @@ function App() {
         <Route path="/pannding" element={<Pannding/>}> </Route>
         <Route path="/completed" element={<Completed/>}> </Route>
         <Route path="/process" element={<Process/>}> </Route>
+        <Route path="/taskdetails" element={<TaskDetail/>}> </Route>
         
       </Routes>
     </BrowserRouter></>
