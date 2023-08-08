@@ -5,13 +5,10 @@ import { Base } from '../../../Base/Base'
 import { Button, Card } from 'react-bootstrap';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import { deepOrange, deepPurple } from '@mui/material/colors';
-import { Send } from '@mui/icons-material';
-
+import { Dropdowns } from './Dropdown';
 export const TaskDetail = () => {
   
     return (
@@ -70,14 +67,8 @@ export const TaskDetail = () => {
                     <Card>
                         <Card.Body>
                             <p className=' text-secondary fs-8 fw-semibold'>STATUS</p>
-                            <Dropdown as={ButtonGroup} data-bs-theme="dark">
-                                <Button variant="secondary" className='btn-sm '> To Do</Button>
-                                <Dropdown.Toggle split variant="secondary" id="dropdown-split-basic" />
-                                <Dropdown.Menu bg='Dark'>
-                                    <Dropdown.Item href="#/action-1">In Process</Dropdown.Item>
-                                    <Dropdown.Item href="#/action-2">Completed</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            
+                            <Dropdowns/>
                             <div className='mt-3'>
                                 <p className='m-2 fs-7 fw-medium'>Start Date :-</p>
                                 <br />
