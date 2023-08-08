@@ -1,18 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 import { Col, Row } from 'react-bootstrap';
 import Nav from 'react-bootstrap/Nav';
-import { IconButton, Paper } from '@mui/material';
+import { IconButton, Menu, MenuItem, Paper } from '@mui/material';
 import { AccountCircle, Search } from '@mui/icons-material';
 export const NavBar = () => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+   
     return (
-        <Navbar sticky="top"  className='nav-color font_600 shadow-sm' bg='' data-bs-theme="dark">
+        <Navbar sticky="top" className='nav-color font_600 shadow-sm' bg='' data-bs-theme="dark">
             <Container className='justify-content-start'>
                 <Row className='w_500'>
                     <Col sm={3}>
-                    <Nav.Link as={Link} to="/" className=' font_700'>DoiT !</Nav.Link>
+                        <Nav.Link as={Link} to="/" className=' font_700'>DoiT !</Nav.Link>
                     </Col>
                     <Col sm={9}>
                         <Paper
@@ -26,13 +35,13 @@ export const NavBar = () => {
                             }}
                         >
                             <input
-                                
+
                                 className='search-bar bg-white'
-                                placeholder='Search...'  
+                                placeholder='Search...'
                             />
 
                             <IconButton type='submite'
-                                sx={{ p: '10px', color: '#6D57F6' ,ml:'100px'}}
+                                sx={{ p: '10px', color: '#6D57F6', ml: '100px' }}
                             >
                                 <Search />
                             </IconButton>
@@ -43,14 +52,34 @@ export const NavBar = () => {
                 <Row className='ms-auto p-2'>
                     <Col sm={1}>
                         <IconButton
-                        className='fontSize '
+                            className='fontSize '
                             aria-label="account of current user"
+                            onClick={handleMenu}
                             aria-controls="primary-search-account-menu"
                             aria-haspopup="true"
                             color="inherit"
                         >
-                            <AccountCircle  />
+                            <AccountCircle />
+                            
                         </IconButton>
+                        <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                <MenuItem onClick={handleClose}>My account</MenuItem>
+                            </Menu>
                     </Col>
                 </Row>
 
