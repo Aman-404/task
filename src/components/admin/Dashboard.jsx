@@ -27,7 +27,7 @@ const statusCards = [
     }
 ];
 
-export const Home = () => {
+export const Dashboard = () => {
     const { tasks } = useSelector(state => state.tasks);
 
     const getTaskCountByStatus = (status) => {

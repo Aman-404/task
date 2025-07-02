@@ -1,133 +1,314 @@
 import React, { useState } from 'react';
-import { Form, Button, Alert, Card, Row, Col } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Grid,
+  Avatar,
+  InputAdornment,
+  IconButton,
+  Snackbar,
+  Alert,
+  Chip
+} from '@mui/material';
+import {
+  Person,
+  Email,
+  Lock,
+  Visibility,
+  VisibilityOff,
+  AdminPanelSettings,
+  Group,
+  Work
+} from '@mui/icons-material';
+import { motion } from 'framer-motion';
 import { Base } from '../../Base/Base';
-import { Sidebar } from './Sidebar';
 
-
-const FormField = ({ controlId, label, type, name, placeholder, value, onChange }) => {
-  return (
-    <Form.Group controlId={controlId}>
-      <Form.Label>{label}</Form.Label>
-      <Form.Control type={type} name={name} placeholder={placeholder} value={value} onChange={onChange} />
-    </Form.Group>
-  );
-};
+const userRoles = [
+  { value: 'admin', label: 'Administrator', icon: <AdminPanelSettings />, color: '#ef4444', description: 'Full system access' },
+  { value: 'manager', label: 'Project Manager', icon: <Work />, color: '#f59e0b', description: 'Manage projects and teams' },
+  { value: 'user', label: 'Team Member', icon: <Group />, color: '#10b981', description: 'Standard user access' }
+];
 
 export const CreateUser = () => {
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
+    role: '',
+    department: ''
   });
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [successMsg, setSuccessMsg] = useState(false);
 
-  const [error, setError] = useState('');
-
-  const { name, email, password, confirmPassword } = formData;
-
-  const handleChange = (e) => {
-    //console.log(formData);
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
   };
 
   const validateForm = () => {
-    if (!name.trim()) {
-      return 'Please enter your name.';
-    } else if (!email.trim()) {
-      return 'Please enter your email address.';
-    } else if (!password) {
-      return 'Please enter a password.';
-    } else if (password !== confirmPassword) {
-      return 'Passwords do not match.';
+    const newErrors = {};
+
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Invalid email format';
     }
-    return '';
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+    if (!formData.role) newErrors.role = 'Role is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const validationError = validateForm();
+    if (!validateForm()) return;
 
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
+    console.log('Creating user:', formData);
+    setSuccessMsg(true);
 
-    setError('');
-
-    console.log('Name:', name);
-    console.log('Email:', email);
-    console.log('Password:', password);
-    console.log('Confirm Password:', confirmPassword);
-
-    setFormData({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    });
+    setTimeout(() => {
+      navigate('/home');
+    }, 2000);
   };
 
+  const handleCancel = () => {
+    navigate('/home');
+  };
+
+  const selectedRole = userRoles.find(role => role.value === formData.role);
+
   return (
-    <>
-      <Base>
-        <Row>
-          <Col sm={2}>
-            <Sidebar />
-          </Col>
-          <Col sm={10} >
-            <Card className="shadow-lg rounded-lg p-3 mt-3 ml-4 custom-card">
-              <h1 className="custom-heading mb-3">Create New User</h1>
-              <Card.Body>
-                {error ? <Alert variant="danger">{error}</Alert> : null}
-                <Form onSubmit={handleSubmit}>
-                  <FormField
-                    controlId="formName"
-                   
-                    type="text"
-                    name="name"
-                    placeholder="Enter name"
+    <Base>
+      <Box sx={{ p: 3 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Paper elevation={2} sx={{ borderRadius: 3, overflow: 'hidden', maxWidth: 800, mx: 'auto' }}>
+            {/* Header */}
+            <Box sx={{ p: 3, borderBottom: '1px solid #e5e7eb', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
+              <Typography variant="h4" sx={{ color: 'white', fontWeight: 600, textAlign: 'center' }}>
+                Create New User
+              </Typography>
+              <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', textAlign: 'center', mt: 1 }}>
+                Add a new team member to your project
+              </Typography>
+            </Box>
+
+            {/* Avatar Preview */}
+            <Box sx={{ p: 3, textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>
+              <Avatar 
+                sx={{ 
+                  width: 80, 
+                  height: 80, 
+                  mx: 'auto', 
+                  mb: 2,
+                  backgroundColor: selectedRole?.color || '#6366f1',
+                  fontSize: '2rem'
+                }}
+              >
+                {formData.name ? formData.name.charAt(0).toUpperCase() : <Person />}
+              </Avatar>
+              {selectedRole && (
+                <Chip
+                  icon={selectedRole.icon}
+                  label={selectedRole.label}
+                  sx={{
+                    backgroundColor: `${selectedRole.color}20`,
+                    color: selectedRole.color,
+                    fontWeight: 600
+                  }}
+                />
+              )}
+            </Box>
+
+            {/* Form */}
+            <Box component="form" onSubmit={handleSubmit} sx={{ p: 3 }}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Full Name"
                     value={formData.name}
-                    onChange={handleChange}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    error={!!errors.name}
+                    helperText={errors.name}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person sx={{ color: '#6b7280' }} />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
-                  <FormField
-                    controlId="formEmail"
-                  
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
                     type="email"
-                    name="email"
-                    placeholder="Enter email"
+                    label="Email Address"
                     value={formData.email}
-                    onChange={handleChange}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    error={!!errors.email}
+                    helperText={errors.email}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Email sx={{ color: '#6b7280' }} />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
+                </Grid>
 
-                  <FormField
-                    controlId="formPassword"
-                    type="password"
-                    name="password"
-                    placeholder="Password"
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    type={showPassword ? 'text' : 'password'}
+                    label="Password"
                     value={formData.password}
-                    onChange={handleChange}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    error={!!errors.password}
+                    helperText={errors.password}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock sx={{ color: '#6b7280' }} />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
+                </Grid>
 
-                  <FormField
-                    controlId="formConfirmPassword"
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirm password"
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    label="Confirm Password"
                     value={formData.confirmPassword}
-                    onChange={handleChange}
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock sx={{ color: '#6b7280' }} />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            edge="end"
+                          >
+                            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
+                </Grid>
 
-                  <Button variant="primary" type="submit" className="mt-3 custom-button float-end">
-                    Create
-                  </Button>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Base>
-    </>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth error={!!errors.role}>
+                    <InputLabel>User Role</InputLabel>
+                    <Select
+                      value={formData.role}
+                      onChange={(e) => handleInputChange('role', e.target.value)}
+                      label="User Role"
+                    >
+                      {userRoles.map((role) => (
+                        <MenuItem key={role.value} value={role.value}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              {React.cloneElement(role.icon, { sx: { color: role.color } })}
+                              <Typography variant="body1">{role.label}</Typography>
+                            </Box>
+                            <Typography variant="caption" sx={{ color: '#6b7280', ml: 'auto' }}>
+                              {role.description}
+                            </Typography>
+                          </Box>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+                <Button
+                  onClick={handleCancel}
+                  sx={{ color: '#6b7280' }}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, #5b21b6, #7c3aed)',
+                    }
+                  }}
+                >
+                  Create User
+                </Button>
+              </Box>
+            </Box>
+          </Paper>
+        </motion.div>
+      </Box>
+
+      <Snackbar
+        open={successMsg}
+        autoHideDuration={3000}
+        onClose={() => setSuccessMsg(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="success" sx={{ width: '100%' }}>
+          User created successfully! Redirecting to home...
+        </Alert>
+      </Snackbar>
+    </Base>
   );
 };

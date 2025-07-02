@@ -1,81 +1,69 @@
-import * as React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
+import React, { useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import {
+    List,
+    ListItemButton,
+    ListItemAvatar,
+    ListItemText,
+    Avatar,
+    Typography,
+    TextField,
+    InputAdornment,
+    Box
+} from '@mui/material';
+import { Search } from '@mui/icons-material';
 
 export const AlignItemsList = ({ handleAssignToSelect }) => {
+    const { users } = useSelector(state => state.users);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredUsers = useMemo(() => {
+        if (!searchQuery) {
+            return users;
+        }
+        return users.filter(user =>
+            user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [users, searchQuery]);
+
     return (
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            <ListItem alignItems="flex-start" button onClick={() => handleAssignToSelect('Brunch this weekend?')}>
-                <ListItemAvatar>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                    primary="Brunch this weekend?"
-                    secondary={
-                        <React.Fragment>
-                            <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
+        <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+            <TextField
+                fullWidth
+                variant="outlined"
+                placeholder="Search users..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <Search />
+                        </InputAdornment>
+                    ),
+                }}
+                sx={{ p: 2 }}
+            />
+            <List sx={{ overflow: 'auto', maxHeight: 300 }}>
+                {filteredUsers.map(user => (
+                    <ListItemButton key={user.id} onClick={() => handleAssignToSelect(user)}>
+                        <ListItemAvatar>
+                            <Avatar
+                                sx={{ bgcolor: '#6366f1' }}
+                                alt={user.name}
+                                src={user.avatar}
                             >
-                                Ali Connors
-                            </Typography>
-                            {" — I'll be in your neighborhood doing errands this…"}
-                        </React.Fragment>
-                    }
-                />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-            <ListItem alignItems="flex-start" button onClick={() => handleAssignToSelect('Summer BBQ')}>
-                <ListItemAvatar>
-                    <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                    primary="Summer BBQ"
-                    secondary={
-                        <React.Fragment>
-                            <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                            >
-                                to Scott, Alex, Jennifer
-                            </Typography>
-                            {" — Wish I could come, but I'm out of town this…"}
-                        </React.Fragment>
-                    }
-                />
-            </ListItem>
-            <Divider variant="inset" component="li" />
-            <ListItem alignItems="flex-start" button onClick={() => handleAssignToSelect('Oui Oui')}>
-                <ListItemAvatar>
-                    <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                </ListItemAvatar>
-                <ListItemText
-                    primary="Oui Oui"
-                    secondary={
-                        <React.Fragment>
-                            <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                            >
-                                Sandra Adams
-                            </Typography>
-                            {' — Do you have Paris recommendations? Have you ever…'}
-                        </React.Fragment>
-                    }
-                />
-            </ListItem>
-        </List>
+                                {user.name.charAt(0)}
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={user.name}
+                            secondary={user.email}
+                        />
+                    </ListItemButton>
+                ))}
+            </List>
+        </Box>
     );
 };
 
