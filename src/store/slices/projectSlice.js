@@ -9,7 +9,7 @@ const initialState = {
       description: 'Advanced task management system with agile features',
       key: 'TMP',
       owner: 'Admin',
-      members: ['John Doe', 'Jane Smith', 'Bob Johnson'],
+      members: ['John Doe', 'Jane Smith', 'Bob Johnson','Aman Upadhyay'],
       status: 'active',
       createdAt: '2024-01-01',
       color: '#6366f1',

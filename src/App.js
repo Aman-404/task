@@ -111,12 +111,12 @@ function App() {
               <Home />
             </ProtectedRoute>
           } />
-           <Route path="/admin/dashboard" element={
+          <Route path="/admin/dashboard" element={
             <ProtectedRoute>
               <AdminDashboard />
             </ProtectedRoute>
           } />
-           <Route path="/admin/users" element={
+          <Route path="/admin/users" element={
             <ProtectedRoute>
               <UserList />
             </ProtectedRoute>

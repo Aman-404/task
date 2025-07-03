@@ -5,7 +5,7 @@ import { NavigationSidebar } from '../components/navigation/NavigationSidebar';
 
 export const Base = ({ children }) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column',zoom:0.9 }}>
       <NavBar />
       <Box sx={{ 
         display: 'flex',

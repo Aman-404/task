@@ -32,7 +32,17 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test:coverage": "react-scripts test --coverage --coverageDirectory=coverage",
+    "test:ci": "react-scripts test --coverage --ci --passWithNoTests",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write src/**/*.{js,jsx,ts,tsx,json,css,md}",
+    "format:check": "prettier --check src/**/*.{js,jsx,ts,tsx,json,css,md}",
+    "analyze": "npm run build && npx serve -s build",
+    "clean": "rimraf build coverage",
+    "dev": "npm start",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
